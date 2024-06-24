@@ -11,13 +11,20 @@ import (
 )
 
 func main() {
-	vips.Startup(nil)
+	config := &vips.Config{
+		ConcurrencyLevel: 6,
+	}
+	vips.Startup(config)
 	defer vips.Shutdown()
 
 	startTime := time.Now()
 
 	inputDir := "../../../Pictures/towebp"
 	files, err := os.ReadDir(inputDir)
+	checkError(err)
+
+	outputDir := filepath.Join(inputDir, "webp_images")
+	err = os.MkdirAll(outputDir, 0755)
 	checkError(err)
 
 	for _, file := range files {
@@ -38,7 +45,7 @@ func main() {
 		checkError(err)
 
 		outputFile := strings.TrimSuffix(file.Name(), filepath.Ext(file.Name())) + ".webp"
-		err = os.WriteFile(filepath.Join(inputDir, outputFile), webpBytes, 0644)
+		err = os.WriteFile(filepath.Join(outputDir, outputFile), webpBytes, 0644)
 		checkError(err)
 
 		fmt.Printf("Image %s compressed and saved to %s in ", file.Name(), outputFile)
