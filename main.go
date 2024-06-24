@@ -27,6 +27,7 @@ func main() {
 	err = os.MkdirAll(outputDir, 0755)
 	checkError(err)
 
+	fmt.Println("Compressing images to webp format...")
 	for _, file := range files {
 		if file.IsDir() {
 			continue
@@ -48,12 +49,11 @@ func main() {
 		err = os.WriteFile(filepath.Join(outputDir, outputFile), webpBytes, 0644)
 		checkError(err)
 
-		fmt.Printf("Image %s compressed and saved to %s in ", file.Name(), outputFile)
 	}
 
 	elapsedTime := time.Since(startTime)
 	seconds := float64(elapsedTime) / float64(time.Second)
-	fmt.Printf("\nAll images compressed and saved in %.1f seconds\n", seconds)
+	fmt.Printf("Total time taken: %.1f seconds", seconds)
 }
 
 func checkError(err error) {
